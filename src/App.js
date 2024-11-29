@@ -2,6 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
+import { enUS } from "date-fns/locale";
 import Home from "./Home.jsx";
 import Layout from "./Layout";
 import About from "./About.jsx";
@@ -49,34 +50,44 @@ function App() {
     setPosts(postList);
     navigate("/");
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
-    const dateTime = format(new Date(), "MMM dd, yyyy pp")
+    const datetime = format(new Date(), "MMMM dd, yyyy HH:mm", {
+      locale: enUS,
+    });
+
     const newPost = {
       id,
       title: postTitle,
       body: postBody,
-      dateTime,
-    }
-    const allPost = [...posts, newPost]
-    setPosts(allPost)
-    setPostTitle('')
-    setPostBody("")
-    navigate("/")
+      datetime,
+    };
 
+    const allPost = [...posts, newPost];
+    setPosts(allPost);
+    setPostTitle("");
+    setPostBody("");
+    navigate("/");
   };
 
   useEffect(() => {
-    
-  }, [posts, search])
-  
+    const filterPost = posts.filter(
+      (post) =>
+        post.body.toLowerCase().includes(search.toLowerCase()) ||
+        post.title.toLowerCase().includes(search.toLowerCase())
+    );
+    setSearchResalt(filterPost.reverse());
+  }, [posts, search]);
+
   return (
     <Routes>
       <Route
         path="/"
         element={<Layout posts={posts} search={search} setSearch={setSearch} />}
       >
+        <Route index element={<Home posts={searchResalt} />} />
         <Route path="post">
           <Route
             path=":id"
@@ -95,7 +106,6 @@ function App() {
             }
           />
         </Route>
-        <Route index element={<Home posts={posts} />} />
         <Route path="about" element={<About />} />
         <Route path="*" element={<Missing />} />
       </Route>

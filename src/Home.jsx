@@ -1,16 +1,12 @@
-import React from 'react';
-import Feed from "./Feed"
+import React from "react";
+import Feed from "./Feed";
 
-const Home = ({posts}) => {
-  console.log(posts);
-  
+const Home = ({ posts }) => {
   return (
-    <main className='home'>
-    {posts.length ? (
-     <Feed posts ={posts}/>
-    ): (<p>No post display...</p> )}
+    <main className="home">
+      {posts.length ? <Feed posts={posts} /> : <p>No post display...</p>}
     </main>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
